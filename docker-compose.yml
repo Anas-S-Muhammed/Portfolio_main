@@ -1,0 +1,27 @@
+# Local Postgres with pgvector for machines that have Docker.
+# The app auto-selects the Postgres adapter when DATABASE_URL points at it:
+#   docker compose up -d
+#   DATABASE_URL=postgres://portfolio:portfolio@localhost:5432/portfolio pnpm dev
+# Without Docker (or without DATABASE_URL) the app runs on SQLite instead —
+# see docs/adr/0002-database-strategy.md.
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: portfolio-db
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+      POSTGRES_DB: portfolio
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U portfolio -d portfolio']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
