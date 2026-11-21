@@ -1,0 +1,14 @@
+﻿import Link from 'next/link'
+import { getAwards, getCertifications, getExperiences, getProjects, getSkillsGrouped } from '@/lib/content'
+import { getGlobalSettings, getResumeSettings } from '@/lib/content/settings'
+import { PrintButton } from '@/components/shared/print-button'
+
+export const metadata = { title: 'CV', description: 'Print-ready curriculum vitae for Anas Muhammed.' }
+
+export default async function CVPage() {
+  const [site, projects, groups, experience, certifications, awards, resume] = await Promise.all([getGlobalSettings(), getProjects(), getSkillsGrouped(), getExperiences(), getCertifications(), getAwards(), getResumeSettings()])
+  const pdfUrl = typeof resume.pdf === 'object' ? resume.pdf?.url : undefined
+  if (resume.mode === 'pdf' && pdfUrl) return <main className="container-page cv-page"><div className="cv-actions"><Link href="/#top" className="mono-label">← Portfolio</Link><a className="button button-primary" href={pdfUrl} download>Download CV PDF ↗</a></div><p className="section-lede">The uploaded CV is the current resume source.</p><a href={pdfUrl} className="button button-outline" target="_blank" rel="noreferrer">Preview PDF</a></main>
+  return <main className="container-page cv-page"><div className="cv-actions"><Link href="/#top" className="mono-label">← Portfolio</Link><PrintButton /></div><header className="cv-header"><h1>{site.name || 'Anas Muhammed'}</h1><p>{site.facts?.targetRole || 'Data Engineering / Data Analyst internships'}</p><p>{[site.facts?.location, site.facts?.university, site.facts?.expectedGraduation && `Graduating ${site.facts.expectedGraduation}`].filter(Boolean).join(' · ')}</p><div>{site.socials?.filter((s) => s.url && /^https?:|^mailto:/.test(s.url)).map((s) => <a key={s.platform} href={s.url}>{s.label || s.platform}</a>)}</div></header><section><h2>Profile</h2><p>{site.aboutIntro || site.valueStatement}</p></section><section><h2>Education</h2><h3>{site.facts?.degree || 'Computer Science'}</h3><p>{site.facts?.university} · Expected {site.facts?.expectedGraduation}</p>{site.facts?.cgpa?.show && site.facts.cgpa.value ? <p>CGPA: {site.facts.cgpa.value}</p> : null}</section><section><h2>Projects</h2>{projects.map((p) => <article key={p.id}><h3>{p.title}</h3><p>{p.tagline}</p><p>{p.role}{p.dateRange ? ` · ${p.dateRange}` : ''}</p></article>)}</section><section><h2>Skills</h2>{groups.map(({ category, skills }) => <p key={category.id}><strong>{category.title}: </strong>{skills.map((s) => s.name).join(', ')}</p>)}</section><section><h2>Experience & leadership</h2>{experience.map((e) => <article key={e.id}><h3>{e.role} · {e.organization}</h3><p>{e.startDate}{e.endDate ? ` – ${e.endDate}` : ' – Present'}</p>{e.bullets?.map((b, i) => <p key={i}>{b.text}</p>)}</article>)}</section><section><h2>Certifications & awards</h2>{certifications.map((c) => <p key={c.id}>{c.title} · {c.issuer}</p>)}{awards.map((a) => <p key={a.id}>{a.title} · {a.event} · {a.year}</p>)}</section></main>
+}
+
