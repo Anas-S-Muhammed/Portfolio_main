@@ -64,7 +64,9 @@ export function ContactForm({ siteKey, turnstileRequired = false }: { siteKey?: 
     <label className="contact-honeypot" aria-hidden="true">Leave this field empty<input tabIndex={-1} name="website" autoComplete="off" /></label>
     {turnstileRequired && siteKey ? <div ref={challengeRef} aria-label="Spam protection verification" /> : null}
     {turnstileRequired && !siteKey ? <p className="text-muted">Spam verification is enabled in Admin but its public key is missing.</p> : null}
-    <button className="button button-primary" type="submit" disabled={state === 'sending' || (turnstileRequired && (!siteKey || !token))}>{state === 'sending' ? 'Sending?' : 'Send message ?'}</button>
-    <p className="mono-label" role="status" aria-live="polite">{message}</p>
+    <button className="button button-primary" type="submit" disabled={state === 'sending' || (turnstileRequired && (!siteKey || !token))}>{state === 'sending' ? 'Sending…' : 'Send message'}</button>
+    {state === 'sent' && <p className="mono-label" role="status" aria-live="polite" style={{ color: 'var(--live)' }}>{message}</p>}
+    {state === 'error' && <p className="mono-label" role="alert" aria-live="polite" style={{ color: 'var(--accent)' }}>{message}</p>}
+    {state === 'idle' && message && <p className="mono-label" role="status" aria-live="polite">{message}</p>}
   </form>
 }

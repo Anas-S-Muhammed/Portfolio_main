@@ -8,6 +8,7 @@ import { Providers } from '@/components/providers/providers'
 import { SmoothScroll } from '@/components/providers/smooth-scroll'
 import { ChatWidget } from '@/components/shared/chat-widget'
 import { PageTracker } from '@/components/shared/page-tracker'
+import { ScrollToTop } from '@/components/shared/scroll-to-top'
 import { CommandPalette } from '@/components/shared/command-palette'
 import { getAISettings, getGlobalSettings, getThemeSettings } from '@/lib/content/settings'
 import { getPosts, getProjects } from '@/lib/content'
@@ -108,6 +109,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           <SiteNav />
           <main id="main">{children}</main>
           <SiteFooter />
+          <ScrollToTop />
           <ChatWidget enabled={ai.enabled} greeting={ai.greeting} chips={ai.suggestedChips} />
           <CommandPalette items={paletteItems} />
         </Providers>
