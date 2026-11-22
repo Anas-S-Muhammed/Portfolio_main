@@ -11,6 +11,8 @@ flowchart LR
   R --> L[Source links]
   S --> UI[Chat panel]
   L --> UI
+  L --> UI
+
   UI --> H[Anonymized chat log]
 ```
 
