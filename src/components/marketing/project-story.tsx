@@ -5,6 +5,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { Project } from '@/payload-types'
 
+import { MediaGallery } from '@/components/marketing/media-gallery'
+import { ArchitectureDiagram } from '@/components/marketing/architecture-diagram'
+import { CodeSnippet } from '@/components/marketing/code-snippet'
+import { asMedia } from '@/lib/media'
+
 type Slide = NonNullable<Project['slides']>[number]
 function textOf(value: unknown): string {
   if (typeof value === 'string') return value
@@ -45,8 +50,10 @@ export function ProjectStory({ project, slides, initialSlide = 0 }: { project: P
       <span className="mono-label">{String(i + 1).padStart(2, '0')} / {slide.blockType.replace('slide-', '').replaceAll('-', ' ')}</span><h2>{heading}</h2>
       {slide.blockType === 'slide-cover' && <p className="story-lede">{slide.pitch}</p>}
       {slide.blockType === 'slide-problem' && <><p className="story-statement">{slide.boldStatement}</p><p className="story-body">{textOf(slide.supportingText)}</p></>}
-      {slide.blockType === 'slide-built' && <><p className="story-lede">{slide.intro}</p>{slide.callouts?.length ? <div className="story-callouts">{slide.callouts.map((c, j) => <div className="story-callout" key={`${c.title}-${j}`}><span className="mono-label">FEATURE / 0{j + 1}</span><h3>{c.title}</h3><p>{c.description}</p></div>)}</div> : null}</>}
-      {slide.blockType === 'slide-architecture' && slide.diagram?.nodes?.length ? <div className="architecture-view"><div className="architecture-nodes">{slide.diagram.nodes.map((node, j) => <div className="architecture-node" key={`${node.id}-${j}`}><span className="mono-label">{node.tier}</span><strong>{node.label}</strong></div>)}</div><ol className="architecture-edges">{slide.diagram.edges?.map((edge, j) => <li key={`${edge.from}-${edge.to}-${j}`}>{edge.from} <span aria-hidden="true">→</span> {edge.to}{edge.label ? ` · ${edge.label}` : ''}</li>)}</ol></div> : null}
+      {slide.blockType === 'slide-built' && <><p className="story-lede">{slide.intro}</p>{slide.visuals?.length ? <MediaGallery items={slide.visuals.map((v) => { const m = asMedia(v.image); return { src: m?.url || '', alt: m?.alt || 'Project visual', caption: v.caption || undefined } })} /> : null}{slide.callouts?.length ? <div className="story-callouts">{slide.callouts.map((c, j) => <div className="story-callout" key={`${c.title}-${j}`}><span className="mono-label">FEATURE / 0{j + 1}</span><h3>{c.title}</h3><p>{c.description}</p></div>)}</div> : null}</>}
+      {slide.blockType === 'slide-architecture' && slide.diagram?.nodes?.length ? <ArchitectureDiagram nodes={slide.diagram.nodes.map((n) => ({ id: n.id, label: n.label, tier: n.tier || 'transform', icon: n.icon || undefined }))} edges={slide.diagram.edges || []} /> : null}
+      {slide.blockType === 'slide-gallery' && slide.items?.length ? <MediaGallery items={slide.items.map((i) => { const m = asMedia(i.image); return { src: m?.url || '', alt: m?.alt || 'Project visual', caption: i.caption || undefined } })} /> : null}
+      {slide.blockType === 'slide-query' && <><CodeSnippet code={slide.code} language={slide.language} caption={slide.caption || undefined} /></>}
       {slide.blockType === 'slide-stack-role' && <div className="story-facts">{project.role && <p><span className="mono-label">ROLE</span>{project.role}</p>}{project.teamSize && <p><span className="mono-label">TEAM</span>{project.teamSize}</p>}{project.dateRange && <p><span className="mono-label">TIMELINE</span>{project.dateRange}</p>}{slide.notes && <p>{slide.notes}</p>}</div>}
       {slide.blockType === 'slide-results' && <>{project.metrics?.length ? <div className="story-metrics">{project.metrics.map((m, j) => <div className="story-metric" key={`${m.label}-${j}`}><strong>{m.value}{m.suffix}</strong><span>{m.label}</span>{m.caption && <small>{m.caption}</small>}</div>)}</div> : <p className="story-body">No outcome metrics have been published for this project.</p>}{slide.note && <p className="story-body">{slide.note}</p>}</>}
       {slide.blockType === 'slide-decisions' && <div className="story-callouts">{slide.decisions?.map((d, j) => <div className="story-callout" key={`${d.chose}-${j}`}><span className="mono-label">DECISION / 0{j + 1}</span><h3>{d.chose}</h3><p className="text-muted">Instead of {d.over}</p><p>{d.because}</p></div>)}</div>}

@@ -23,7 +23,7 @@ export const SectionConfig: GlobalConfig = {
       admin: {
         description: 'Drag to reorder. Untick "Visible" to hide a section entirely.',
       },
-      defaultValue: [
+        defaultValue: [
         { key: 'hero', visible: true },
         { key: 'marquee', visible: true },
         { key: 'about', visible: true },

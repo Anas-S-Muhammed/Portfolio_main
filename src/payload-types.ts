@@ -1546,15 +1546,15 @@ export interface SectionConfig {
       | 'skills'
       | 'experience'
       | 'research'
-      | 'certifications'
-      | 'awards'
-      | 'beyond'
-      | 'process'
-      | 'proof'
-      | 'ninety'
-      | 'writing'
-      | 'github'
-      | 'contact';
+    | 'certifications'
+    | 'awards'
+    | 'beyond'
+    | 'process'
+    | 'proof'
+    | 'ninety'
+    | 'writing'
+    | 'github'
+    | 'contact';
     visible?: boolean | null;
     /**
      * Leave empty to use the default title.
@@ -1755,17 +1755,17 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         defaultTitle?: T;
         description?: T;
         keywords?: T;
-        canonicalUrl?: T;
-        ogImage?: T;
-      };
-  internshipPlan?:
-    | T
-    | {
-        weekOne?: T;
-        day30?: T;
-        review?: T;
-      };
-  githubUsername?: T;
+      canonicalUrl?: T;
+      ogImage?: T;
+    };
+    internshipPlan?:
+      | T
+      | {
+          weekOne?: T;
+          day30?: T;
+          review?: T;
+        };
+    githubUsername?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
