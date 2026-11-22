@@ -363,6 +363,9 @@ export interface Project {
         | {
             heading?: string | null;
             language: 'sql' | 'python' | 'text';
+            /**
+             * One real query or script from this project. Keep it short enough to read on a slide.
+             */
             code: string;
             caption?: string | null;
             id?: string | null;
@@ -1516,13 +1519,16 @@ export interface SiteSetting {
     ogImage?: (number | null) | Media;
   };
   /**
-   * TODO until the owner supplies it. Section hides while empty.
+   * Shown on the homepage. Write intentions, not claims about work you have not done.
    */
   internshipPlan?: {
     weekOne?: string | null;
     day30?: string | null;
     review?: string | null;
   };
+  /**
+   * TODO until the owner supplies it. Section hides while empty.
+   */
   githubUsername?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1541,20 +1547,20 @@ export interface SectionConfig {
       | 'hero'
       | 'marquee'
       | 'about'
+      | 'proof'
       | 'featured'
       | 'projects'
       | 'skills'
       | 'experience'
       | 'research'
-    | 'certifications'
-    | 'awards'
-    | 'beyond'
-    | 'process'
-    | 'proof'
-    | 'ninety'
-    | 'writing'
-    | 'github'
-    | 'contact';
+      | 'certifications'
+      | 'awards'
+      | 'beyond'
+      | 'process'
+      | 'ninety'
+      | 'writing'
+      | 'github'
+      | 'contact';
     visible?: boolean | null;
     /**
      * Leave empty to use the default title.
@@ -1755,17 +1761,17 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         defaultTitle?: T;
         description?: T;
         keywords?: T;
-      canonicalUrl?: T;
-      ogImage?: T;
-    };
-    internshipPlan?:
-      | T
-      | {
-          weekOne?: T;
-          day30?: T;
-          review?: T;
-        };
-    githubUsername?: T;
+        canonicalUrl?: T;
+        ogImage?: T;
+      };
+  internshipPlan?:
+    | T
+    | {
+        weekOne?: T;
+        day30?: T;
+        review?: T;
+      };
+  githubUsername?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
